@@ -31,15 +31,20 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/error", "auth/registration").permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers("/auth/login", "/error", "auth/registration")
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated())
                 .formLogin(form -> form
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/process_login")
                         .defaultSuccessUrl("/hello", true)
-                        .failureUrl("/auth/login?error"));
+                        .failureUrl("/auth/login?error"))
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/auth/login"));
         return http.getOrBuild();
     }
 
